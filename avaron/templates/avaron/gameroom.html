@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Avaron Game</title>
+</head>
+<body>
+	<p>Players in game {{ game }}:</p>
+    <ul>
+    {% for player in players %}
+        {{ player.name }}
+    {% endfor %}
+    </ul>
+</body>
+</html>
