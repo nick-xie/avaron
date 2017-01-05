@@ -17,7 +17,7 @@ def index(request):
     }
     return HttpResponse(template.render(context, request))
 
-def game_room(request, game_room_num):
+def game_room(request, game_room_num): #things to add: block people from coming in through typing in url
 	g=Game.objects.filter(room_num=game_room_num) #Game ID =/= Game room num, find the game that has the same room num
 	players = Player.objects.filter(game=g) #Using g, we can find the players in the game properly since game compares id's
 	template = loader.get_template('avaron/gameroom.html')
@@ -43,15 +43,22 @@ def make_player(request):
 		p.save() #creates players with game among other things
 	else:
 		form = PlayerForm()
-	return HttpResponseRedirect('/avaron/%s' % game_num) #Redirects to make game
-#now obselete
-def make_game(request, game_num):
-	g=Game.objects.create(room_num=int(game_num),pub_date=timezone.now())
-	g.save()
-	return HttpResponseRedirect('/avaron/%s/' % game_num) #Redirects to game room
-
-# def make_player(request, name):
-# 	g=Game.objects.create(room_num=3,pub_date=timezone.now())
-# 	new_player=Player.objects.create(name="Tim",game=g,role=1)
-# 	new_player.save()
-# 	return HttpResponse("hi")
+	return HttpResponseRedirect('/avaron/%s' % game_num) #Redirects to game room
+#create new game, new room_num
+def make_game(request):
+	if request.method=='POST':
+		form = PlayerForm(request.POST)
+		#gets the name submitted in the template
+		player_name=request.POST.get("player_field", None)
+		gamelist = Game.objects.all() #gets all existing games
+		roomnums=[]
+		for game in gamelist:
+			roomnums.append(int(game.room_num)) #create an array of all existing game_num's
+		new_num=1+max(roomnums) #simply add 1 to largest current game_num and this is our new game_num
+		g=Game.objects.create(room_num=new_num,pub_date=timezone.now())
+		g.save() #creates game
+		p=Player.objects.create(game=g,name=player_name,role=0)
+		p.save() #creates player
+	else:
+		form = PlayerForm()
+	return HttpResponseRedirect('/avaron/%s' % new_num) #Redirects to game room
