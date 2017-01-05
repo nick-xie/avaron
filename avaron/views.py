@@ -19,15 +19,22 @@ def index(request):
 def game_room(request, game_room_num):
 	return HttpResponse("You're in the room for game %s" % game_room_num)
 
-def make_player(request, player_name, game_num):
+def make_player(request):
 	if request.method=='POST':
 		form = PlayerForm(request.POST)
-		if form.is_valid():
-			p=Game.objects.create(game=game_num,name=player_name,role=0)
-			p.save()
+		#gets the values submitted in the template
+		player_name=request.POST.get("player_field", None)
+		game_num=request.POST.get("game_field", None)
+		#creates the game from the given game number (will add check if game already exists later)
+		g=Game.objects.create(room_num=int(game_num),pub_date=timezone.now())
+		g.save()
+		#creates the player from the game number and other things
+		p=Player.objects.create(game=g,name=player_name,role=0)
+		p.save()
 	else:
 		form = PlayerForm()
-	return HttpResponseRedirect('/avaron/game/%s' % game_num) #Redirects to make game
+	return HttpResponseRedirect('/avaron/%s' % game_num) #Redirects to make game
+#now obselete
 def make_game(request, game_num):
 	g=Game.objects.create(room_num=int(game_num),pub_date=timezone.now())
 	g.save()

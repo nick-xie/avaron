@@ -8,13 +8,13 @@
 	{% if latest_game_list %}
     <ul>
     {% for game in latest_game_list %}
-        <li><a href="/avaron/{{ game.room_num }}/">Game: {{ game.room_num }}</a></li>
+        <li><a href="{% url 'avaron:game_room' game.room_num %}">Game: {{ game.room_num }}</a></li>
     {% endfor %}
     </ul>
 	{% else %}
     <p>No games exist.</p>
 {% endif %}
-<form action = "" method="post">
+<form action = "make_player/" method="post">
 {% csrf_token %}
 <table>
 {{ form }}
