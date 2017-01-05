@@ -17,7 +17,14 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 def game_room(request, game_room_num):
-	return HttpResponse("You're in the room for game %s" % game_room_num)
+	g=Game.objects.filter(room_num=game_room_num) #Game ID =/= Game room num, find the game that has the same room num
+	players = Player.objects.filter(game=g) #Using g, we can find the players in the game properly since game compares id's
+	template = loader.get_template('avaron/gameroom.html')
+	context = {
+		'players': players,
+		'game': game_room_num, #'name' is the name of the variable that can be used in the html file through {{ name }}
+	}
+	return HttpResponse(template.render(context,request))
 
 def make_player(request):
 	if request.method=='POST':
