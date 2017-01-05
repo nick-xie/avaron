@@ -7,8 +7,12 @@
 	<p>Players in game {{ game }}:</p>
     <ul>
     {% for player in players %}
-        {{ player.name }}
+        -{{ player.name }} <p>
     {% endfor %}
     </ul>
 </body>
+<form action = "{% url 'avaron:home' %}" method="post">
+{% csrf_token %}
+<input type="submit" value="Go back to Lobby">
+</form>
 </html>
