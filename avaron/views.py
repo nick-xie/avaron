@@ -6,10 +6,11 @@ from .models import Game, Player
 from django.utils import timezone
 from django.urls import reverse
 from .forms import PlayerForm
+from django.shortcuts import get_object_or_404
 
 
 def index(request):
-    latest_game_list = Game.objects.order_by('-pub_date')[:5]
+    latest_game_list = Game.objects.order_by('-pub_date')
     template = loader.get_template('avaron/index.html')
     context = {
         'latest_game_list': latest_game_list,
@@ -32,12 +33,14 @@ def make_player(request):
 		#gets the values submitted in the template
 		player_name=request.POST.get("player_field", None)
 		game_num=request.POST.get("game_field", None)
-		#creates the game from the given game number (will add check if game already exists later)
-		g=Game.objects.create(room_num=int(game_num),pub_date=timezone.now())
-		g.save()
-		#creates the player from the game number and other things
+		gamelist = Game.objects.filter(room_num=game_num) #for more help, seek Django QuerySet API
+		if not gamelist: #game doesn't exist, create it
+			g=Game.objects.create(room_num=int(game_num),pub_date=timezone.now())
+			g.save() #creates game from game num
+		else:
+			g=get_object_or_404(gamelist) #isolates the already existing game
 		p=Player.objects.create(game=g,name=player_name,role=0)
-		p.save()
+		p.save() #creates players with game among other things
 	else:
 		form = PlayerForm()
 	return HttpResponseRedirect('/avaron/%s' % game_num) #Redirects to make game
