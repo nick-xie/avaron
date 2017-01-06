@@ -21,6 +21,7 @@ def index(request):
     context = {
         'latest_game_list': latest_game_list,
     }
+    request.session["legitEntry"]="not_legit"
     return HttpResponse(template.render(context, request))
 
 def game_room(request, game_room_num): #things to add: block people from coming in through typing in url
