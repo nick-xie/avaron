@@ -8,7 +8,6 @@ from django.urls import reverse
 from .forms import PlayerForm
 from django.shortcuts import get_object_or_404
 
-
 def index(request):
     latest_game_list = Game.objects.order_by('-pub_date')
     template = loader.get_template('avaron/index.html')
