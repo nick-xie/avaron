@@ -8,6 +8,13 @@ from django.urls import reverse
 from .forms import PlayerForm
 from django.shortcuts import get_object_or_404
 
+#TODO
+#cookies for players in game
+#start game function, game logic to assign roles
+#block player from entering game through manual url
+#leave game
+#delete game when all leave
+
 def index(request):
     latest_game_list = Game.objects.order_by('-pub_date')
     template = loader.get_template('avaron/index.html')
@@ -17,14 +24,18 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 def game_room(request, game_room_num): #things to add: block people from coming in through typing in url
-	g=Game.objects.filter(room_num=game_room_num) #Game ID =/= Game room num, find the game that has the same room num
-	players = Player.objects.filter(game=g) #Using g, we can find the players in the game properly since game compares id's
-	template = loader.get_template('avaron/gameroom.html')
-	context = {
-		'players': players,
-		'game': game_room_num, #'name' is the name of the variable that can be used in the html file through {{ name }}
-	}
-	return HttpResponse(template.render(context,request))
+	test=request.session['legitEntry']
+	if test=="legit":
+		g=Game.objects.filter(room_num=game_room_num) #Game ID =/= Game room num, find the game that has the same room num
+		players = Player.objects.filter(game=g) #Using g, we can find the players in the game properly since game compares id's
+		template = loader.get_template('avaron/gameroom.html')
+		context = {
+			'players': players,
+			'game': game_room_num, #'name' is the name of the variable that can be used in the html file through {{ name }}
+		}
+		return HttpResponse(template.render(context,request))
+	else:
+		return HttpResponse("Nah dag")
 
 def make_player(request):
 	if request.method=='POST':
@@ -40,6 +51,7 @@ def make_player(request):
 			g=get_object_or_404(gamelist) #isolates the already existing game
 		p=Player.objects.create(game=g,name=player_name,role=0)
 		p.save() #creates players with game among other things
+		request.session['legitEntry']="legit" #Adds a cookie/session to indicate a legit entry
 	else:
 		form = PlayerForm()
 	return HttpResponseRedirect('/avaron/%s' % game_num) #Redirects to game room
@@ -58,6 +70,7 @@ def make_game(request):
 		g.save() #creates game
 		p=Player.objects.create(game=g,name=player_name,role=0)
 		p.save() #creates player
+		request.session['legitEntry']="legit"
 	else:
 		form = PlayerForm()
 	return HttpResponseRedirect('/avaron/%s' % new_num) #Redirects to game room
