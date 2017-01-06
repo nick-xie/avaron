@@ -48,7 +48,11 @@ input[type=text], select {
     box-sizing: border-box;
     background-color: #ffc966;
 }
-
+input, select, textarea{
+    color: white;
+    font-family: "montserrat";
+    font-size: 15px;
+}
 input[type=submit] {
     width: 30%;
     background-color: Tomato;
