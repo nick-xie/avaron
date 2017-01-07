@@ -11,7 +11,6 @@ from django.shortcuts import get_object_or_404
 #TODO
 #cookies for players in game
 #start game function, game logic to assign roles
-#block player from entering game through manual url
 #leave game
 #delete game when all leave
 
@@ -24,9 +23,9 @@ def index(request):
     request.session["legitEntry"]="not_legit"
     return HttpResponse(template.render(context, request))
 
-def game_room(request, game_room_num): #things to add: block people from coming in through typing in url
+def game_room(request, game_room_num):
 	test=request.session['legitEntry']
-	if test=="legit":
+	if test=="legit": #properly entered game (not typing in url)
 		g=Game.objects.filter(room_num=game_room_num) #Game ID =/= Game room num, find the game that has the same room num
 		players = Player.objects.filter(game=g) #Using g, we can find the players in the game properly since game compares id's
 		template = loader.get_template('avaron/gameroom.html')
@@ -35,8 +34,10 @@ def game_room(request, game_room_num): #things to add: block people from coming 
 			'game': game_room_num, #'name' is the name of the variable that can be used in the html file through {{ name }}
 		}
 		return HttpResponse(template.render(context,request))
-	else:
-		return HttpResponse("Nah dag")
+	else: #send user to badjoing screen
+		template = loader.get_template('avaron/badjoin.html')
+		context = {}
+		return HttpResponse(template.render(context, request))
 
 def make_player(request):
 	if request.method=='POST':

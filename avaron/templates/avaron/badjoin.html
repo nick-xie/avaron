@@ -6,12 +6,8 @@
 <link href="{% static 'avaron/lobby.css' %}" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-	<p><montserratb>Players in game {{ game }}:</montserratb></p>
-    <ul>
-    {% for player in players %}
-        <montserrat><whiteC>-{{ player.name }} </whiteC></montserrat><p>
-    {% endfor %}
-    </ul>
+	<p><montserratb>ERR....</montserratb></p>
+	<p><montserratb>TRY TO PROPERLY JOIN/CREATE A GAME THROUGH LOBBY BUTTONS</montserratb></p>
 </body>
 <form action = "{% url 'avaron:home' %}" method="post">
 {% csrf_token %}
