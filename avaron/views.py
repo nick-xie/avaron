@@ -55,7 +55,7 @@ def make_player(request):
 		p=Player.objects.create(game=g,name=player_name,role=0,seed=seed)
 		p.save() #creates players with game among other things
 		request.session['id']=seed #to identify player
-		request.session['gameEntry']=game_num #Adds a cookie/session to indicate a legit entry
+		request.session['gameEntry']=int(game_num) #Adds a cookie/session to indicate a legit entry
 	else:
 		form = PlayerForm()
 	return HttpResponseRedirect('/avaron/%s' % game_num) #Redirects to game room
