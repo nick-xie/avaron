@@ -17,6 +17,7 @@
 {% csrf_token %}
 <input type="submit" value="start game">
 <p></p>
+</form>
 <form action = "{% url 'avaron:home' %}" method="post">
 {% csrf_token %}
 <input type="submit" value="back to lobby">

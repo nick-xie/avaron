@@ -13,7 +13,7 @@
         <li><a href="{% url 'avaron:game_room' game.room_num %}"><montserrat>game: {{ game.room_num }}</montserrat></a></li>
     {% endfor %}
 	{% else %}</p>
-    <p>No games exist.</p>
+    <p><montserrat>No games exist.</montserrat></p>
 {% endif %}
 <p class = "bottomspace">
 <form action = "make_player/" method="post">
