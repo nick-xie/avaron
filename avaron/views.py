@@ -25,7 +25,7 @@ def index(request):
 
 def game_room(request, game_room_num):
 	test=request.session['gameEntry']
-	if test==game_room_num: #properly entered game (not typing in url)
+	if test==int(game_room_num): #properly entered game (not typing in url)
 		g=Game.objects.filter(room_num=game_room_num) #Game ID =/= Game room num, find the game that has the same room num
 		players = Player.objects.filter(game=g) #Using g, we can find the players in the game properly since game compares id's
 		template = loader.get_template('avaron/gameroom.html')
@@ -38,7 +38,7 @@ def game_room(request, game_room_num):
 		template = loader.get_template('avaron/badjoin.html')
 		context = {}
 		return HttpResponse(template.render(context, request))
-#create new game, new room_num
+#create new player
 def make_player(request):
 	if request.method=='POST':
 		form = PlayerForm(request.POST)
@@ -60,7 +60,7 @@ def make_player(request):
 		form = PlayerForm()
 	return HttpResponseRedirect('/avaron/%s' % game_num) #Redirects to game room
 
-#in game
+#new game
 def make_game(request):
 	if request.method=='POST':
 		form = PlayerForm(request.POST)
@@ -77,11 +77,12 @@ def make_game(request):
 		p=Player.objects.create(game=g,name=player_name,role=0,seed=seed)
 		p.save() #creates player
 		request.session['id']=seed #to identify player
-		request.session['gameEntry']=new_num
+		request.session['gameEntry']=int(new_num)
 	else:
 		form = PlayerForm()
 	return HttpResponseRedirect('/avaron/%s' % new_num) #Redirects to game room
 
+#in game
 def start_game(request, game_num, round_num):
 	g=Game.objects.filter(room_num=game_num)
 	players = Player.objects.filter(game=g).order_by('seed') #players in game, sorted
