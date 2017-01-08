@@ -12,6 +12,7 @@
         <montserrat><whiteC>-{{ player.name }} Role: {{ player.role }} </whiteC></montserrat><p>
     {% endfor %}
     </ul>
+    <p><montserrat>Your Guy: {{ your_guy.name }} Role: {{ your_guy.role }} </montserrat></p>
 </body>
 
 <form action = "{% url 'avaron:home' %}" method="post">
