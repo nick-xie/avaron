@@ -6,17 +6,14 @@
 <link href="{% static 'avaron/lobby.css' %}" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-	<p><montserratb>Players in game {{ game }}:</montserratb></p>
+	<p><montserratb>Round Number {{ round_num }}:</montserratb></p>
     <ul>
     {% for player in players %}
-        <montserrat><whiteC>-{{ player.name }} </whiteC></montserrat><p>
+        <montserrat><whiteC>-{{ player.name }} Role: {{ player.role }} </whiteC></montserrat><p>
     {% endfor %}
     </ul>
 </body>
-<form action = "{% url 'avaron:start_game' game 1 %}" method="post">
-{% csrf_token %}
-<input type="submit" value="start game">
-<p></p>
+
 <form action = "{% url 'avaron:home' %}" method="post">
 {% csrf_token %}
 <input type="submit" value="back to lobby">

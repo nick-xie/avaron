@@ -12,5 +12,6 @@ class Player(models.Model):
 	game = models.ForeignKey(Game, on_delete=models.CASCADE)
 	name = models.CharField(max_length=20)
 	role = models.BooleanField()
+	seed = models.BigIntegerField(default = 0)
 	def __str__(self):
-		return "Name: " + self.name +" Game: " + str(self.game.room_num)
+		return "Name: " + self.name +" Game: " + str(self.game.room_num) + "Seed: " + str(self.seed)
