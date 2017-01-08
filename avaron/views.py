@@ -20,7 +20,7 @@ def index(request):
     context = {
         'latest_game_list': latest_game_list,
     }
-    request.session["gameEntry"]="na"
+    request.session['gameEntry']="na"
     return HttpResponse(template.render(context, request))
 
 def game_room(request, game_room_num):
@@ -54,6 +54,7 @@ def make_player(request):
 		seed=randint(1,9001) #seed will determine role
 		p=Player.objects.create(game=g,name=player_name,role=0,seed=seed)
 		p.save() #creates players with game among other things
+		request.session['id']=seed #to identify player
 		request.session['gameEntry']=game_num #Adds a cookie/session to indicate a legit entry
 	else:
 		form = PlayerForm()
@@ -75,6 +76,7 @@ def make_game(request):
 		seed=randint(1,9001)
 		p=Player.objects.create(game=g,name=player_name,role=0,seed=seed)
 		p.save() #creates player
+		request.session['id']=seed #to identify player
 		request.session['gameEntry']=new_num
 	else:
 		form = PlayerForm()
@@ -82,20 +84,22 @@ def make_game(request):
 
 def start_game(request, game_num, round_num):
 	g=Game.objects.filter(room_num=game_num)
-	players = Player.objects.filter(game=g).order_by('seed') #players in game
-	#players.objects.order_by('player__seed') #sort players
+	players = Player.objects.filter(game=g).order_by('seed') #players in game, sorted
 	num_bad=math.floor(players.count()*0.43)
 	i=1 #counter
 	for player in players: #assign roles to players
-		if (i<num_bad):
+		if (i<=num_bad):
 			player.role=0
 		else:
 			player.role=1
 		i=i+1
 		player.save()
+	our_seed = request.session['id']
+	your_guy=Player.objects.filter(seed=our_seed)
 	template = loader.get_template('avaron/ingame.html')
 	context = {
 		'players': players,
+		'your_guy': your_guy.first(),
 		'game': game_num,
 		'round_num': round_num,
 	}
