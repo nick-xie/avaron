@@ -4,6 +4,7 @@
 <title>Avaron Game</title>
 {% load static %}
 <link href="{% static 'avaron/lobby.css' %}" rel="stylesheet" type="text/css"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 </head>
 <body>
 	<h1><montserratb>AVARON GAME LOBBY</montserratb></h1>
@@ -16,7 +17,7 @@
     <p><montserrat>No games exist.</montserrat></p>
 {% endif %}
 <p class = "bottomspace">
-<form action = "make_player/" method="post">
+<form action = "make_player/" method="post" onsubmit="myButton.disabled = true; return true;">
 {% csrf_token %}
 <montserrat><whiteC><h1>player name<ind>game code</ind> </h1></whiteC></montserrat>
 <p><input id="player_name" type="text" name="player_field"><ind2><input id="game_num" type="text" name="game_field"></ind2></p>
@@ -24,7 +25,7 @@
 </form></p>
 
 <p class = "bottomspace">
-<form action = "make_game/" method="post">
+<form action = "make_game/" method="post" onsubmit="myButton.disabled = true; return true;">
 {% csrf_token %}
 <montserrat><whiteC><h1>player name</h1></whiteC></montserrat>
 <p><input id="player_name" type="text" name="player_field"></p>
