@@ -7,12 +7,24 @@
 </head>
 <body>
 	<p><montserratb>Round Number {{ round_num }}:</montserratb></p>
-    <ul>
+<!--     <ul>
     {% for player in players %}
         <montserrat><whiteC>-{{ player.name }} Role: {{ player.role }} </whiteC></montserrat><p>
     {% endfor %}
-    </ul>
-    <p><montserrat>Your Guy: {{ your_guy.name }} Role: {{ your_guy.role }} </montserrat></p>
+    </ul> -->
+    <p><montserrat>You: {{ your_guy.name }}</montserrat></p>
+    <montserrat><p>~~~~~~~~~~~~</p></montserrat><p></p>
+    {% if your_guy.role %}
+    	<montserrat>You are a Good Guy!</montserrat>
+    {% else %}
+    	<montserrat><p>Bad Guys:</p></montserrat>
+    	{% for player in players %}
+        	{% if player.role %}
+        	{% else %}
+        		<montserrat><p>{{ player.name }}</p></montserrat>
+        	{% endif %}
+    	{% endfor %}
+    {% endif %}
 </body>
 
 <form action = "{% url 'avaron:home' %}" method="post">

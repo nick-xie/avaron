@@ -6,6 +6,7 @@ from django.db import models
 class Game(models.Model):
 	room_num = models.IntegerField()
 	pub_date = models.DateTimeField('date created')
+	game_started = models.BooleanField(default=0)
 	def __str__(self):
 		return "Room num: " + str(self.room_num)
 class Player(models.Model):

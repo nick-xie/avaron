@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Avaron Game</title>
+{% load static %}
+<link href="{% static 'avaron/lobby.css' %}" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+	<p><montserratb>ERR....</montserratb></p>
+	<p><montserratb>GAME ALREADY STARTED...SORRY</montserratb></p>
+</body>
+<form action = "{% url 'avaron:home' %}" method="post">
+{% csrf_token %}
+<input type="submit" value="back to lobby">
+</form>
+</html>

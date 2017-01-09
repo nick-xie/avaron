@@ -38,7 +38,7 @@ def game_room(request, game_room_num):
 		template = loader.get_template('avaron/badjoin.html')
 		context = {}
 		return HttpResponse(template.render(context, request))
-#create new player
+#join game
 def make_player(request):
 	if request.method=='POST':
 		form = PlayerForm(request.POST)
@@ -47,20 +47,26 @@ def make_player(request):
 		game_num=request.POST.get("game_field", None)
 		gamelist = Game.objects.filter(room_num=game_num) #for more help, seek Django QuerySet API
 		if not gamelist: #game doesn't exist, create it
-			g=Game.objects.create(room_num=int(game_num),pub_date=timezone.now())
+			g=Game.objects.create(room_num=int(game_num),pub_date=timezone.now(),game_started=0)
 			g.save() #creates game from game num
 		else:
 			g=get_object_or_404(gamelist) #isolates the already existing game
-		seed=randint(1,9001) #seed will determine role
-		p=Player.objects.create(game=g,name=player_name,role=0,seed=seed)
-		p.save() #creates players with game among other things
-		request.session['id']=seed #to identify player
-		request.session['gameEntry']=int(game_num) #Adds a cookie/session to indicate a legit entry
+		if int(g.game_started)==0: #game hasn't started
+			seed=randint(1,9001) #seed will determine role
+			p=Player.objects.create(game=g,name=player_name,role=0,seed=seed)
+			p.save() #creates players with game among other things
+			request.session['id']=seed #to identify player
+			request.session['gameEntry']=int(game_num) #Adds a cookie/session to indicate a legit entry
+			return HttpResponseRedirect('/avaron/%s' % game_num) #Redirects to game room
+		else: #game has already started, send to sorry page
+			template = loader.get_template('avaron/gameClosed.html')
+			context={}
+			return HttpResponse(template.render(context, request))
 	else:
 		form = PlayerForm()
-	return HttpResponseRedirect('/avaron/%s' % game_num) #Redirects to game room
+		return HttpResponseRedirect('/avaron/%s' % game_num) #Redirects to game room
 
-#new game
+#create game
 def make_game(request):
 	if request.method=='POST':
 		form = PlayerForm(request.POST)
@@ -71,7 +77,7 @@ def make_game(request):
 		for game in gamelist:
 			roomnums.append(int(game.room_num)) #create an array of all existing game_num's
 		new_num=1+max(roomnums) #simply add 1 to largest current game_num and this is our new game_num
-		g=Game.objects.create(room_num=new_num,pub_date=timezone.now())
+		g=Game.objects.create(room_num=new_num,pub_date=timezone.now(),game_started=0)
 		g.save() #creates game
 		seed=randint(1,9001)
 		p=Player.objects.create(game=g,name=player_name,role=0,seed=seed)
@@ -88,13 +94,17 @@ def start_game(request, game_num, round_num):
 	players = Player.objects.filter(game=g).order_by('seed') #players in game, sorted
 	num_bad=math.floor(players.count()*0.43)
 	i=1 #counter
-	for player in players: #assign roles to players
-		if (i<=num_bad):
-			player.role=0
-		else:
-			player.role=1
-		i=i+1
-		player.save()
+	if int(g.first().game_started)==0: #first person to press start game
+		for player in players: #assign roles to players
+			if (i<=num_bad):
+				player.role=0
+			else:
+				player.role=1
+			i=i+1
+			player.save()
+	for game in g:
+		game.game_started=1
+		game.save()
 	our_seed = request.session['id']
 	your_guy=Player.objects.filter(seed=our_seed)
 	template = loader.get_template('avaron/ingame.html')
