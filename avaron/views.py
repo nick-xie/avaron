@@ -9,6 +9,7 @@ from .forms import PlayerForm
 from django.shortcuts import get_object_or_404
 from random import randint
 import math
+import json
 #TODO
 #start game function, game logic to assign roles
 #leave game
@@ -40,11 +41,11 @@ def game_room(request, game_room_num):
 		return HttpResponse(template.render(context, request))
 #join game
 def make_player(request):
-	if request.method=='POST':
+	if (request.method=='POST' and request.is_ajax()):
 		form = PlayerForm(request.POST)
 		#gets the values submitted in the template
-		player_name=request.POST.get("player_field", None)
-		game_num=request.POST.get("game_field", None)
+		player_name=request.POST.get('pname')
+		game_num=request.POST.get('num')
 		gamelist = Game.objects.filter(room_num=game_num) #for more help, seek Django QuerySet API
 		if not gamelist: #game doesn't exist, create it
 			g=Game.objects.create(room_num=int(game_num),pub_date=timezone.now(),game_started=0)
@@ -57,7 +58,9 @@ def make_player(request):
 			p.save() #creates players with game among other things
 			request.session['id']=seed #to identify player
 			request.session['gameEntry']=int(game_num) #Adds a cookie/session to indicate a legit entry
-			return HttpResponseRedirect('/avaron/%s' % game_num) #Redirects to game room
+			data={'gameNumber':game_num}
+			return HttpResponse(json.dumps(data),content_type='application/json')
+			# return HttpResponseRedirect('/avaron/%s' % game_num) #Redirects to game room
 		else: #game has already started, send to sorry page
 			template = loader.get_template('avaron/gameClosed.html')
 			context={}

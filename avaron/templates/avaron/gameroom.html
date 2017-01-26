@@ -5,7 +5,8 @@
 {% load static %}
 <link href="{% static 'avaron/lobby.css' %}" rel="stylesheet" type="text/css"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta http-equiv="refresh" content="3">
+<script src="{% static 'avaron/main.js' %}" type="text/javascript"/></script>
+<script src="https://code.jquery.com/jquery-latest.min.js" type="text/javascript"/></script>
 </head>
 <body>
 	<p><montserratb>Players in game {{ game }}:</montserratb></p>
@@ -15,6 +16,9 @@
     {% endfor %}
     </ul>
 </body>
+<form>
+<input type="button" onClick="history.go(0)" value="&#x21ba;">
+</form>
 <form action = "{% url 'avaron:start_game' game 1 %}" method="post">
 {% csrf_token %}
 <input type="submit" value="start game">
