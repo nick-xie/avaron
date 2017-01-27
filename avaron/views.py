@@ -62,9 +62,8 @@ def make_player(request):
 			return HttpResponse(json.dumps(data),content_type='application/json')
 			# return HttpResponseRedirect('/avaron/%s' % game_num) #Redirects to game room
 		else: #game has already started, send to sorry page
-			template = loader.get_template('avaron/gameClosed.html')
-			context={}
-			return HttpResponse(template.render(context, request))
+			data={'gameNumber':0}
+			return HttpResponse(json.dumps(data),content_type='application/json')
 	else:
 		form = PlayerForm()
 		return HttpResponseRedirect('/avaron/%s' % game_num) #Redirects to game room
