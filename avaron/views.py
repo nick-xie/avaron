@@ -24,6 +24,11 @@ def index(request):
     request.session['gameEntry']="na"
     return HttpResponse(template.render(context, request))
 
+def game_closed(request):
+    template = loader.get_template('avaron/gameClosed.html')
+    context={}
+    return HttpResponse(template.render(context, request))
+
 def game_room(request, game_room_num):
 	test=request.session['gameEntry']
 	if test==int(game_room_num): #properly entered game (not typing in url)
