@@ -3,11 +3,13 @@
 <head>
 <title>Avaron Game</title>
 {% load static %}
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <link href="{% static 'avaron/lobby.css' %}" rel="stylesheet" type="text/css"/>
 <script src="https://code.jquery.com/jquery-latest.min.js" type="text/javascript"/></script>
+<!-- <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script> -->
 <script src="{% static 'avaron/main.js' %}?v=00001" type="text/javascript"/></script>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 </head>
+
 <body>
 	<h1><montserratb>AVARON GAME LOBBY</montserratb></h1>
 	<p class = "bottomspace2">
@@ -18,22 +20,30 @@
 	{% else %}</p>
     <p><montserrat>No games exist.</montserrat></p>
 {% endif %}
-<p class = "bottomspace">
-<form method="post" onsubmit="myButton.disabled = true; return true;">
-{% csrf_token %}
-<montserrat><whiteC><h1>player name</h1></whiteC></montserrat>
-<p><input id="player_name" type="text" name="player_field"></p>
-<montserrat><whiteC><h1>game code</h1></whiteC></montserrat>
-<p><input id="game_num" type="text" name="game_field"></p>
-<input class="btn btn-primary" type="submit" id="join" value="join game">
-</form></p>
 
 <p class = "bottomspace">
-<form action = "make_game/" method="post" onsubmit="myButton.disabled = true; return true;">
-{% csrf_token %}
-<montserrat><whiteC><h1>player name</h1></whiteC></montserrat>
-<p><input id="player_name" type="text" name="player_field"></p>
-<input type="submit" value="create game">
-</form></p>
+	<form method="post" onsubmit="myButton.disabled = true; return true;">
+		{% csrf_token %}
+	<montserrat><whiteC>
+		<h1>player name
+		<p><input id="player_name" type="text" name="player_field"></p>
+		game code
+		</h1>
+	</whiteC></montserrat>
+	<p><input id="game_num" type="text" name="game_field"></p>
+	<input class="btn btn-primary" type="submit" id="join" value="join game">
+	</form>
+</p>
+
+<p class = "bottomspace">
+	<form action = "make_game/" method="post" onsubmit="myButton.disabled = true; return true;">
+	{% csrf_token %}
+	<montserrat><whiteC>
+		<h1>player name</h1>
+	</whiteC></montserrat>
+	<p><input id="player_name" type="text" name="player_field"></p>
+	<input type="submit" value="create game">
+	</form>
+</p>
 </body>
 </html>
