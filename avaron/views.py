@@ -16,7 +16,7 @@ import json
 #delete game when all leave
 
 def index(request):
-    latest_game_list = Game.objects.order_by('-pub_date')
+    latest_game_list = Game.objects.filter(game_started=0).order_by('-pub_date')
     template = loader.get_template('avaron/index.html')
     context = {
         'latest_game_list': latest_game_list,
