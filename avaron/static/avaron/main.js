@@ -36,7 +36,7 @@ $("#join").click(function(e) {
  		success : function(json) {
  			console.log(json); // another sanity check
  //On success show the data posted to server as a message
- 			alert(json.gameNumber);
+ 			// alert(json.gameNumber);
  			if (json.gameNumber == 0) {
  			    window.location.href='/avaron/GameClosed';
  			} else {

@@ -5,15 +5,16 @@
 {% load static %}
 <link href="{% static 'avaron/lobby.css' %}" rel="stylesheet" type="text/css"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<script src="{% static 'avaron/main.js' %}" type="text/javascript"/></script>
+<script src="{% static 'avaron/ingame.js' %}?v=00003" type="text/javascript"/></script>
 <script src="https://code.jquery.com/jquery-latest.min.js" type="text/javascript"/></script>
 </head>
 <body>
-	<p><montserratb>Players in game {{ game }}:</montserratb></p>
-    <ul>
-    {% for player in players %}
+	<p id="gameHeader"></p>
+	<p id="gamenum"><montserratb>{{ game }}</montserratb></p>
+    <ul id="playerList">
+<!--     {% for player in players %}
         <montserrat><whiteC>-{{ player.name }} </whiteC></montserrat><p>
-    {% endfor %}
+    {% endfor %} -->
     </ul>
 </body>
 <form>

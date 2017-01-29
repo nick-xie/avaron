@@ -94,7 +94,17 @@ def make_game(request):
 	else:
 		form = PlayerForm()
 	return HttpResponseRedirect('/avaron/%s' % new_num) #Redirects to game room
-
+#send a list of players as a json to js file
+def send_players(request):
+	if (request.method=='POST' and request.is_ajax()):
+		game_num=request.POST.get('num')
+		g=Game.objects.filter(room_num=int(game_num))
+		players = Player.objects.filter(game=g) #players in game
+		plist=[]
+		for player in players:
+			plist.append(player.name)
+		data={'players':plist}
+		return HttpResponse(json.dumps(data),content_type='application/json')
 #in game
 def start_game(request, game_num, round_num):
 	g=Game.objects.filter(room_num=game_num)
