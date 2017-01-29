@@ -19,6 +19,7 @@ function getCookie(name) {
 $(document).ready(function(){
 //When join is clicked
 $("#join").click(function(e) {
+	$("#join").prop('disabled', true);
 //Prevent default submit. Must for Ajax post.Beginner's pit.
 	e.preventDefault();
 //Prepare csrf token
