@@ -15,17 +15,21 @@
     </ul> -->
     <p><montserrat>You: {{ your_guy.name }}</montserrat></p>
     <montserrat><p>~~~~~~~~~~~~</p></montserrat><p></p>
-    {% if your_guy.role %}
+    
+    Role: {{ your_guy.role }}<br>You see: <br>{{ visible }}
+    <!-- {% if your_guy.team %}
     	<montserrat>You are a Good Guy!</montserrat>
+        Teamates: {{ your_guy.visible }}
     {% else %}
     	<montserrat><p>Bad Guys:</p></montserrat>
+        {{ your_guy.visible }}
     	{% for player in players %}
         	{% if player.role %}
         	{% else %}
         		<montserrat><p>{{ player.name }}</p></montserrat>
         	{% endif %}
     	{% endfor %}
-    {% endif %}
+    {% endif %} -->
 </body>
 
 <form action = "{% url 'avaron:home' %}" method="post">
