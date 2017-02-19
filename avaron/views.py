@@ -117,7 +117,6 @@ def start_game(request, game_num, round_num):
 		visibR=eval(str(g.rules_v)) #come back to this one day
 		teamR=eval(str(g.rules_t))
 		for i in range(0,len(visibR)): #choose appropriate game based off player count
-			print len(visibR[i])
 			if(players.count()==len(visibR[i])):
 				visibR=visibR[i]
 				teamR=teamR[i]
@@ -151,7 +150,6 @@ def start_game(request, game_num, round_num):
 	formatVis=""
 	for i in eval(str(your_guy.visible)):
 		formatVis=formatVis+str(i)+"\n"
-	print(formatVis)
 	template = loader.get_template('avaron/ingame.html')
 	context = {
 		'players': players,
