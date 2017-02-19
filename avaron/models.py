@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-# Create your models here.
 class Game(models.Model):
 	room_num = models.IntegerField()
 	pub_date = models.DateTimeField('date created')
