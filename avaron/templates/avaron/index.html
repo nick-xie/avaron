@@ -28,14 +28,17 @@
   <div class="container">
   	<div class="row" id="games">
   		<div class="four columns offset-by-four" style="margin-top:3%">
-  			{% if latest_game_list %}
+        <p style="text-align: center">Open Games:</p>
+        <ul id="openGames">          
+        </ul>
+  			<!-- {% if latest_game_list %}
   			    {% for game in latest_game_list %}
   			        <li><a href="{% url 'avaron:game_room' game.room_num %}">
   			        game: {{ game.room_num }}</a></li>
   			    {% endfor %}
   				{% else %}
   			    <p>No games exist.</p>
-  			{% endif %}
+  			{% endif %} -->
   		</div>
   	</div>
   </div>
@@ -58,10 +61,9 @@
   	<div class="row">
   		<div class="six columns offset-by-three" style="margin-top: 3%">
   			<div class="cardr">
-  				<form action = "make_game/" method="post" onsubmit="myButton.disabled = true; return true;">
-          {% csrf_token %}
+  				<form method="post" onsubmit="myButton.disabled = true; return true;">
 					<h1>player name</h1>
-					<input id="player_name" type="text" name="player_field"><br>
+					<input id="player_nameC" type="text" name="player_field"><br>
   					<input class="button-primary" type="submit" value="create game" id="red">
   				</form>
   			</div>

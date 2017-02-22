@@ -76,10 +76,10 @@ def make_player(request):
 
 #create game
 def make_game(request):
-	if request.method=='POST':
+	if (request.method=='POST' and request.is_ajax()):
 		form = PlayerForm(request.POST)
 		#gets the name submitted in the template
-		player_name=request.POST.get("player_field", None)
+		player_name=request.POST.get('pname')
 		gamelist = Game.objects.all() #gets all existing games
 		roomnums=[]
 		for game in gamelist:
@@ -95,9 +95,12 @@ def make_game(request):
 		p.save() #creates player
 		request.session['id']=seed #to identify player
 		request.session['gameEntry']=int(new_num)
+		data={'gameNumber':new_num}
 	else:
+		print("ohno")
 		form = PlayerForm()
-	return HttpResponseRedirect('/avaron/%s' % new_num) #Redirects to game room
+	return HttpResponse(json.dumps(data),content_type='application/json')
+	#return HttpResponseRedirect('/avaron/%s' % new_num) #Redirects to game room
 #send a list of players as a json to js file
 def send_players(request):
 	if (request.method=='POST' and request.is_ajax()):
@@ -108,6 +111,15 @@ def send_players(request):
 		for player in players:
 			plist.append(player.name)
 		data={'players':plist}
+		return HttpResponse(json.dumps(data),content_type='application/json')
+#send a list of numbers of all open games as a json to js file
+def send_games(request):
+	if (request.method=='POST' and request.is_ajax()):
+		g=Game.objects.filter(game_started=0) #all open games
+		glist=[]
+		for game in g:
+			glist.append(game.room_num)
+		data={'games':glist}
 		return HttpResponse(json.dumps(data),content_type='application/json')
 #in game
 def start_game(request, game_num, round_num):
