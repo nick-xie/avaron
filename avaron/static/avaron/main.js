@@ -1,3 +1,4 @@
+//LOBBY JS
 //For getting CSRF token
 function getCookie(name) {
     var cookieValue = null;
@@ -14,24 +15,50 @@ function getCookie(name) {
     }
  return cookieValue;
 }
+var scrollFunction = function(idstring) {
+  $('html, body').animate({
+      scrollTop: $(idstring).offset().top
+  }, 400);
+};
+function fillOutGame(game_num){
+  $('#game_num').val(game_num);
+  scrollFunction('.cardb');
+  $('#player_name').focus();
+}
 //List available games
 function listGames(){
-  var csrftoken = getCookie('csrftoken');
+  var csrftoken2 = getCookie('csrftoken');
   $.ajax({
       type : 'POST',
-      data : { csrfmiddlewaretoken : csrftoken },
+      data : { csrfmiddlewaretoken : csrftoken2 },
       ifModified: true,
       url : "GetGames/",
     success : function(json) {
       if(status!="notmodified"){
         //console.log(json);
+        //alert("change");
+        var cGames= $('#openGames').text();
+        //Must do a manual check for changes since AJAX xhr statuses can only check for not notmodified (which isn't working) 
         var glist = json.games;
-        $('#openGames').empty();
-        for (var i = 0; i < glist.length; i++) {
-          $('#openGames').append('<li>' + glist[i] + '</li>');
+        var clist ="";
+        for (var i = 0; i<glist.length; i++) {
+          clist = clist + "" + glist[i];
         }
-        setTimeout(listGames(), 2000);
+        //alert(cGames);
+        //alert(clist);
+        if(clist!=cGames){
+          $('#openGames').empty();
+          for (var i = 0; i < glist.length; i++) {
+            var num=glist[i];
+            buildListElementItem = $('<li>' + glist[i] + '</li>');
+            buildListElementItem.bind('click', function (){
+              fillOutGame($(this).text());
+            });
+            $("#openGames").append(buildListElementItem);
+          }
+        }
       }
+      setTimeout(listGames(), 2000);
     },
     error : function(xhr,errmsg,err) {
       console.log(xhr.status + ": " + xhr.responseText);

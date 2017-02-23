@@ -16,7 +16,14 @@ body {
   text-decoration: none;
   background-color: #dce1e2;
 }
-
+ul.openGamesC{
+  font-size: 1.3em;
+  color: #6E7578;
+}
+.openGamesC li:hover {
+  color: #55595b;
+  text-shadow: 0.1em 0.1em 0.2em black;
+}
 #red{
   color: #FFF;
   background-color: #f24f60;

@@ -24,14 +24,13 @@ function listPlayers(){
 	    url : "GetPlayers/",
 		success : function(json) {
 			if(status!="notmodified"){
-				console.log(json);
 				var plist = json.players;
 				$('#playerList').empty();
 				for (var i = 0; i < plist.length; i++) {
 					$('#playerList').append('<p>' + plist[i] + '</p>');
 				}
-				setTimeout(listPlayers(), 2000);
 			}
+			setTimeout(listPlayers(), 2000);
 		},
 		error : function(xhr,errmsg,err) {
 			console.log(xhr.status + ": " + xhr.responseText);

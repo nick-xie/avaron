@@ -10,6 +10,6 @@ urlpatterns = [
     url(r'^make_player/$', views.make_player, name='make_player'), #makes player and game
     url(r'^(?P<game_num>[0-9]+)/(?P<round_num>[0-9]+)/$', views.start_game, name='start_game'),
     url(r'^GameClosed/', views.game_closed, name='game_closed'),
-    url(r'^\d+/GetPlayers/', views.send_players, name='send_players'),
-    url(r'^GetGames/', views.send_games, name='send_games'),
+    url(r'^\d+/GetPlayers/', views.send_players, name ='send_players'),
+    url(r'^GetGames/', views.send_games, name ='send_games'),
 ]
