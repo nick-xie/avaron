@@ -21,6 +21,7 @@ var scrollFunction = function(idstring) {
   }, 400);
 };
 function fillOutGame(game_num){
+  $('#JoinError').empty();
   $('#game_num').val(game_num);
   scrollFunction('.cardb');
   $('#player_name').focus();
@@ -115,7 +116,9 @@ $(document).ready(function(){
  			// alert(json.gameNumber);
  			if (json.gameNumber == 0) {
  			    window.location.href='/avaron/GameClosed';
- 			} else {
+ 			} else if (json.gameNumber == -1) {
+          $('#JoinError').text("Sorry, that game doesn't exist.");
+      }else {
  			    window.location.href='/avaron/' + json.gameNumber;
  			}
  		},
