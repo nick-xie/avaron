@@ -95,7 +95,6 @@ $(document).ready(function(){
   //-------------------------------------------------------------/
   //When join is clicked
   $("#join").click(function(e) {
-	 $("#join").prop('disabled', true);
     //Prevent default submit. Must for Ajax post.Beginner's pit.
 	 e.preventDefault();
     //Prepare csrf token
@@ -119,6 +118,7 @@ $(document).ready(function(){
  			} else if (json.gameNumber == -1) {
           $('#JoinError').text("Sorry, that game doesn't exist.");
       }else {
+          $("#join").prop('disabled', true);
  			    window.location.href='/avaron/' + json.gameNumber;
  			}
  		},

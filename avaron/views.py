@@ -56,6 +56,7 @@ def make_player(request):
 		if not gamelist: #game doesn't exist, stop joining
 			data={'gameNumber':-1} #gameNumber = -1 indicates game doesn't exist
 			return HttpResponse(json.dumps(data),content_type='application/json')
+		g=get_object_or_404(gamelist) #isolates the already existing game
 		if int(g.game_started)==0: #game hasn't started
 			seed=randint(1,9001) #seed will determine role
 			p=Player.objects.create(game=g,name=player_name,role=0,seed=seed)
