@@ -17,6 +17,7 @@
 </head>
 
 <body>
+	{% csrf_token %}
   <div class="container">
     <div class="row">
       <div class="eight columns offset-by-two" style="margin-top: 3%">
@@ -31,19 +32,11 @@
         <p style="text-align: center">Open Games:</p>
         <ul id="openGames" class="openGamesC">   
         </ul>
-  			<!-- {% if latest_game_list %}
-  			    {% for game in latest_game_list %}
-  			        <li><a href="{% url 'avaron:game_room' game.room_num %}">
-  			        game: {{ game.room_num }}</a></li>
-  			    {% endfor %}
-  				{% else %}
-  			    <p>No games exist.</p>
-  			{% endif %} -->
   		</div>
   	</div>
   </div>
 
-  <div class="containter">
+  <div class="container">
   	<div class="row">
   		<div class="six columns offset-by-three" style="margin-top: 3%">
   			<div class="cardb">

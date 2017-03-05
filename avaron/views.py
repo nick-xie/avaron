@@ -41,7 +41,7 @@ def game_room(request, game_room_num):
 			'game': game_room_num, #'name' is the name of the variable that can be used in the html file through {{ name }}
 		}
 		return HttpResponse(template.render(context,request))
-	else: #send user to badjoing screen
+	else: #send user to bad join screen
 		template = loader.get_template('avaron/badjoin.html')
 		context = {}
 		return HttpResponse(template.render(context, request))
@@ -58,7 +58,7 @@ def make_player(request):
 			return HttpResponse(json.dumps(data),content_type='application/json')
 		g=get_object_or_404(gamelist) #isolates the already existing game
 		if int(g.game_started)==0: #game hasn't started
-			seed=randint(1,9001) #seed will determine role
+			seed=randint(1,90001) #seed will be used for randomization
 			p=Player.objects.create(game=g,name=player_name,role=0,seed=seed)
 			p.save() #creates players with game among other things
 			request.session['id']=seed #to identify player
@@ -84,12 +84,24 @@ def make_game(request):
 		for game in gamelist:
 			roomnums.append(int(game.room_num)) #create an array of all existing game_num's
 		new_num=1+max(roomnums) #simply add 1 to largest current game_num and this is our new game_num
-		visibilityR=[[[1,2],[2,1],[3,1,2],[4],[5]],[[1,2],[2,1],[3,1],[4],[5],[6]],[[1,2,3],[2,1,3],[3,1,2],[4,2,5],[5,2,3],[6],[7]]]
-		teamR=[[[1,2],[3,4,5]],[[1,2],[3,4,5,6]],[[1,2,3],[4,5,6,7]]]
+		visibilityR=[
+		[[-1,-1,0,0,0],[-1,-1,0,0,0],[0,0,1,0,0],[0,0,0,1,0],[0,0,0,0,1]],
+		[[-1,-1,0,0,0,0],[-1,-1,0,0,0,0],[0,-1,1,0,0,0],[0,0,0,1,0,0],[0,0,0,0,1,0],[0,0,0,0,0,1]],
+		[[-1,-1,-1,0,0,0,0],[-1,-1,-1,0,0,0,0],[-1,-1,-1,0,0,0,0],[0,-1,-1,1,0,0,0],[0,0,-1,-1,1,0,0],[0,0,0,0,0,1,0],[0,0,0,0,0,0,1]],
+		[[-1,-1,-1,0,0,0,0,0],[-1,-1,-1,0,0,0,0,0],[-1,-1,-1,0,0,0,0,0],[0,0,0,1,0,0,0,0],[0,0,0,0,1,0,0,0],[0,0,0,0,0,1,0,0],[0,0,0,0,0,0,1,0],[0,0,0,0,0,0,0,1]],
+		[[-1,-1,-1,0,0,0,0,0,0],[-1,-1,-1,0,0,0,0,0,0],[-1,-1,-1,0,0,0,0,0,0],[0,0,0,1,0,0,0,0,0],[0,0,0,0,1,0,0,0,0],[0,0,0,0,0,1,0,0,0],[0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,1,0],[0,0,0,0,0,0,0,0,1]]
+		]
+		RoleNames=[
+		["Bad Guy1","Bad Guy2","Good Guy 3","Good Guy 4","Good Guy 5"],
+		["Known bad guy - you are hidden so far from good guys","Bad Guy - one good guy sees you","Smart Good guy - You see one bad","Good Guy 1","Good Guy 2","Good Guy 3"],
+		["Mordrid","Assassin","Morgana","Merlin","Percival","Dumb Blue 1","Dumb Blue 2"],
+		["Bad Guy","Bad Guy","Bad Guy","Good Guy","Good Guy","Good Guy","Good Guy","Good Guy"],
+		["Bad Guy","Bad Guy","Bad Guy","Good Guy","Good Guy","Good Guy","Good Guy","Good Guy","Good Guy"]
+		]
 		g=Game.objects.create(room_num=new_num,pub_date=timezone.now(),
-			game_started=0,rules_v=visibilityR,rules_t=teamR)
+			game_started=0,rules_v=visibilityR,rules_t=RoleNames)
 		g.save() #creates game
-		seed=randint(1,9001)
+		seed=randint(1,90001)
 		p=Player.objects.create(game=g,name=player_name,role=0,seed=seed)
 		p.save() #creates player
 		request.session['id']=seed #to identify player
@@ -125,41 +137,41 @@ def start_game(request, game_num, round_num):
 	g=Game.objects.filter(room_num=game_num).first()
 	players = Player.objects.filter(game=g).order_by('seed') #players in game, sorted
 	if int(g.game_started)==0: #first person to press start game
+	# ------ ASSIGN ROLES ---------
 		visibR=eval(str(g.rules_v)) #come back to this one day
-		teamR=eval(str(g.rules_t))
-		for i in range(0,len(visibR)): #choose appropriate game based off player count
+		NameR=eval(str(g.rules_t))
+		for i in range(0,len(visibR)): #choose appropriate game rules based off player count
 			if(players.count()==len(visibR[i])):
 				visibR=visibR[i]
-				teamR=teamR[i]
+				NameRules=NameR[i]
 				break
-		i=1#counter
+		i=0
 		for player in players: #assign roles(num) and team to players
 			player.role=i #player is number i
-			for tc in range(0,len(teamR)): #assigns team
-				if (i in teamR[tc]):
-					player.team=tc
-					break
-			vc=0
-			for vc in range(0, len(visibR)): #give visibility rules to player by vc
-				if (visibR[vc][0]==i):
-					player.visible=visibR[vc] #convert back to string
-			i=i+1
+			player.team=visibR[i][i]
+			player.visible=visibR[i]
 			player.save()
-		for player in players: #replace vc with names
-			newVisib=[]
-			for i in range(0,len(player.visible)):
+			i=i+1
+		for player in players: # Write player msg to display to the user.
+			VisibNames=[]
+			for j in range(0,len(player.visible)):
 				#find the name
-				namedP = Player.objects.filter(role=player.visible[i],game=g)
-				newVisib.append(namedP.first().name)
-			random.shuffle(newVisib)
-			player.visible=newVisib
+				if player.visible[j]==-1 and j!=player.role:
+					namedP = Player.objects.filter(role=j,game=g)
+					VisibNames.append(namedP.first().name)
+			random.shuffle(VisibNames)
+			player.msg=VisibNames
 			player.save()
 		g.game_started=1
+		g.rules_t=NameRules
 		g.save()
+	# ------------------------------
 	our_seed = request.session['id']
 	your_guy=Player.objects.filter(seed=our_seed).first()
+	NameR=eval(str(g.rules_t))
+	YourRole = NameR[your_guy.role]
 	formatVis=""
-	for i in eval(str(your_guy.visible)):
+	for i in eval(str(your_guy.msg)):
 		formatVis=formatVis+str(i)+"\n"
 	template = loader.get_template('avaron/ingame.html')
 	context = {
@@ -168,5 +180,6 @@ def start_game(request, game_num, round_num):
 		'game': game_num,
 		'round_num': round_num,
 		'visible': formatVis,
+		'role_name': YourRole,
 	}
 	return HttpResponse(template.render(context,request))

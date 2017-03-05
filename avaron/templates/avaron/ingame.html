@@ -7,29 +7,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 </head>
 <body>
+	{% csrf_token %}
 	<p><montserratb>Round Number {{ round_num }}:</montserratb></p>
-<!--     <ul>
-    {% for player in players %}
-        <montserrat><whiteC>-{{ player.name }} Role: {{ player.role }} </whiteC></montserrat><p>
-    {% endfor %}
-    </ul> -->
     <p><montserrat>You: {{ your_guy.name }}</montserrat></p>
-    <montserrat><p>~~~~~~~~~~~~</p></montserrat><p></p>
-    
-    Role: {{ your_guy.role }}<br>You see: <br>{{ visible }}
-    <!-- {% if your_guy.team %}
-    	<montserrat>You are a Good Guy!</montserrat>
-        Teamates: {{ your_guy.visible }}
-    {% else %}
-    	<montserrat><p>Bad Guys:</p></montserrat>
-        {{ your_guy.visible }}
-    	{% for player in players %}
-        	{% if player.role %}
-        	{% else %}
-        		<montserrat><p>{{ player.name }}</p></montserrat>
-        	{% endif %}
-    	{% endfor %}
-    {% endif %} -->
+    <montserrat><p>~~~~~~~~~~~~</p></montserrat>    
+    Role: {{ role_name}}<br>
+	You are on team: {{your_guy.team}} <br>
+	You see:{{visible}}
 </body>
 
 <form action = "{% url 'avaron:home' %}" method="post">
